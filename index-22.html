@@ -1,0 +1,2725 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLANNING</title>
+
+<!-- ── PWA ── -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f0b429">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PLANNING">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #1a1a1a;
+    --ink-light: #5a5a5a;
+    --ink-faint: #9a9a9a;
+    --border: #d0d0d0;
+    --border-light: #e8e8e8;
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --yellow: #f0b429;
+    --yellow-bg: #fffbf0;
+    --blue: #1d6fa4;
+    --blue-bg: #f0f6fc;
+    --green: #1a7a4a;
+    --green-bg: #f0faf4;
+    --red: #c0392b;
+    --red-bg: #fdf0ef;
+    --orange: #d46b1a;
+    --orange-bg: #fdf5ed;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: #fff;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    print-color-adjust: exact;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-icon {
+    width: 36px; height: 36px; background: var(--yellow);
+    border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  header h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.02em; }
+  header p { font-size: 12px; color: #aaa; margin-top: 1px; }
+
+  /* ── NAV TABS ── */
+  nav {
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    gap: 0;
+    padding: 0 28px;
+    overflow-x: auto;
+  }
+  nav button {
+    background: none; border: none; cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: var(--ink-faint);
+    padding: 13px 18px;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: color .15s, border-color .15s;
+    display: flex; align-items: center; gap: 7px;
+  }
+  nav button:hover { color: var(--ink); }
+  nav button.active { color: var(--ink); border-color: var(--yellow); }
+  nav button .badge {
+    background: var(--yellow); color: var(--ink);
+    font-size: 10px; font-weight: 700;
+    padding: 1px 6px; border-radius: 10px;
+  }
+
+  /* ── SECTIONS ── */
+  .section { display: none; padding: 28px; max-width: 1200px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--ink-light);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title span { font-size: 15px; }
+
+  /* ── FORMS ── */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  label { font-size: 12px; font-weight: 500; color: var(--ink-light); }
+  input, select, textarea {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; color: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 8px 10px;
+    background: var(--surface);
+    outline: none;
+    transition: border-color .15s;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue); }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 600;
+    padding: 9px 18px; border-radius: 5px;
+    border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
+    transition: opacity .15s, transform .1s;
+  }
+  .btn:hover { opacity: .88; }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: var(--ink); color: #fff; }
+  .btn-yellow { background: var(--yellow); color: var(--ink); }
+  .btn-outline { background: none; border: 1.5px solid var(--border); color: var(--ink); }
+  .btn-red { background: var(--red); color: #fff; }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+
+  /* ── CORPS DE TRAVAUX COLORS ── */
+  .corps-GO { background: #e8f4fd; border-left: 3px solid #1d6fa4; }
+  .corps-MA { background: #fdf0ef; border-left: 3px solid #c0392b; }
+  .corps-EL { background: #fffbf0; border-left: 3px solid #f0b429; }
+  .corps-PL { background: #f0faf4; border-left: 3px solid #1a7a4a; }
+  .corps-ME { background: #f5f0fd; border-left: 3px solid #7b52ab; }
+  .corps-PE { background: #fdf5ed; border-left: 3px solid #d46b1a; }
+  .corps-CA { background: #f0fdf8; border-left: 3px solid #0d9488; }
+  .corps-ET { background: #fdf0f0; border-left: 3px solid #dc2626; }
+
+  /* ── PLANNING TABLE ── */
+  .planning-controls {
+    display: flex; align-items: center; gap: 14px;
+    flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .week-nav { display: flex; align-items: center; gap: 8px; }
+  .week-label {
+    font-size: 14px; font-weight: 600;
+    min-width: 200px; text-align: center;
+  }
+
+  .table-wrapper { overflow-x: auto; }
+  table.planning {
+    width: 100%; border-collapse: collapse;
+    font-size: 12px; min-width: 900px;
+  }
+  table.planning th {
+    background: var(--ink); color: #fff;
+    padding: 10px 8px; text-align: center;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: .04em;
+    border: 1px solid #333;
+  }
+  table.planning th.corps-col { background: #333; min-width: 130px; text-align: left; padding-left: 12px; }
+  table.planning td {
+    border: 1px solid var(--border);
+    padding: 0; vertical-align: top;
+    min-height: 60px;
+  }
+  table.planning td.corps-name {
+    padding: 10px 12px;
+    font-size: 12px; font-weight: 600;
+    background: var(--bg);
+    min-width: 140px;
+    vertical-align: middle;
+  }
+  table.planning td.day-cell {
+    min-width: 120px; min-height: 60px;
+    position: relative;
+  }
+  .cell-inner {
+    min-height: 60px; padding: 4px;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .task-chip {
+    background: var(--yellow);
+    border-radius: 3px;
+    padding: 3px 6px;
+    font-size: 11px; font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 4px;
+    transition: opacity .1s;
+  }
+  .task-chip:hover { opacity: .8; }
+  .task-chip .del { color: var(--red); font-weight: 700; font-size: 12px; line-height: 1; }
+  .task-chip .edit-task { font-size: 11px; cursor: pointer; opacity: 0; transition: opacity 0.15s; line-height: 1; }
+  .task-chip:hover .edit-task { opacity: 1; }
+  .add-task-btn {
+    width: 100%; background: none; border: 1px dashed var(--border);
+    border-radius: 3px; padding: 4px;
+    font-size: 10px; color: var(--ink-faint);
+    cursor: pointer; font-family: 'Inter', sans-serif;
+    transition: border-color .15s, color .15s;
+  }
+  .add-task-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+  .corps-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block; margin-right: 6px; flex-shrink: 0;
+  }
+
+  /* ── RAPPORT ── */
+  .avancement-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 700px) { .avancement-grid { grid-template-columns: 1fr; } }
+  
+  .progress-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 14px;
+  }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .progress-label { font-size: 13px; font-weight: 600; }
+  .progress-pct { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; color: var(--blue); }
+  .progress-bar-bg { background: var(--border-light); border-radius: 4px; height: 8px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 4px; background: var(--blue); transition: width .3s; }
+  .progress-bar-fill.done { background: var(--green); }
+  .progress-bar-fill.warning { background: var(--orange); }
+  .progress-bar-fill.danger { background: var(--red); }
+
+  /* ── FICHES SAUVEGARDÉES ── */
+  .saved-list { display: flex; flex-direction: column; gap: 10px; }
+  .saved-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .saved-item-info { flex: 1; }
+  .saved-item-title { font-size: 13px; font-weight: 600; }
+  .saved-item-meta { font-size: 11px; color: var(--ink-faint); margin-top: 2px; }
+  .tag {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 600;
+  }
+  .tag-planning { background: var(--blue-bg); color: var(--blue); }
+  .tag-rapport { background: var(--green-bg); color: var(--green); }
+  .tag-materiau { background: var(--yellow-bg); color: var(--orange); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.45); z-index: 200;
+    align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border-radius: 8px;
+    padding: 24px; width: 100%; max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  }
+  .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+  .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
+  /* ── MATERIAUX TABLE ── */
+  table.mat-table {
+    width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px;
+  }
+  table.mat-table th {
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 8px 10px; font-size: 12px; font-weight: 600;
+    text-align: left; color: var(--ink-light);
+  }
+  table.mat-table td {
+    border: 1px solid var(--border); padding: 6px 8px; vertical-align: middle;
+  }
+  table.mat-table td input {
+    border: none; background: none; padding: 2px 4px;
+    width: 100%; font-size: 13px;
+  }
+  table.mat-table td input:focus { background: var(--blue-bg); border-radius: 3px; }
+  .urgence-badge {
+    padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700;
+  }
+  .urgence-normale { background: var(--green-bg); color: var(--green); }
+  .urgence-urgente { background: var(--yellow-bg); color: var(--orange); }
+  .urgence-critique { background: var(--red-bg); color: var(--red); }
+
+  .hide-mobile { display: inline; }
+  .show-mobile { display: none; }
+
+  @media (max-width: 640px) {
+    .hide-mobile { display: none; }
+    .show-mobile { display: inline; }
+  }
+
+  /* ── RESPONSIVE MOBILE ── */
+  @media (max-width: 640px) {
+    /* Header */
+    header {
+      padding: 10px 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    header h1 { font-size: 13px; }
+    header p { font-size: 11px; }
+    .header-icon { width: 30px; height: 30px; font-size: 15px; }
+    #chantier-name {
+      width: 100% !important;
+      font-size: 13px !important;
+    }
+    header > div:last-child { width: 100%; }
+
+    /* Nav */
+    nav { padding: 0 8px; gap: 0; }
+    nav button {
+      font-size: 11px;
+      padding: 10px 8px;
+      gap: 4px;
+    }
+
+    /* Sections */
+    .section { padding: 14px; }
+
+    /* Cards */
+    .card { padding: 14px; margin-bottom: 14px; }
+
+    /* Forms */
+    .form-grid { grid-template-columns: 1fr; gap: 10px; }
+    .form-group[style*="grid-column"] { grid-column: 1 !important; }
+
+    /* Buttons */
+    .btn-row { flex-direction: column; gap: 8px; margin-top: 12px; }
+    .btn-row .btn { width: 100%; justify-content: center; }
+
+    /* Planning controls */
+    .planning-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .week-nav {
+      justify-content: space-between;
+      width: 100%;
+    }
+    .week-label {
+      font-size: 12px;
+      min-width: unset;
+      text-align: center;
+      flex: 1;
+    }
+    .planning-controls > div:empty { display: none; }
+    .planning-controls > .btn { width: 100%; justify-content: center; }
+
+    /* Tableur matériaux — affichage carte sur mobile */
+    table.mat-table thead { display: none; }
+    table.mat-table, table.mat-table tbody,
+    table.mat-table tr, table.mat-table td { display: block; width: 100%; }
+    table.mat-table tr {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 10px;
+      padding: 8px;
+      background: var(--surface);
+    }
+    table.mat-table td {
+      border: none;
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    table.mat-table td:first-child {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-faint);
+      justify-content: flex-end;
+    }
+    table.mat-table td input { border: 1px solid var(--border); border-radius: 4px; padding: 6px 8px; }
+    table.mat-table td:last-child { justify-content: flex-end; }
+
+    /* Archives saved items */
+    .saved-item { flex-wrap: wrap; gap: 8px; }
+    .saved-item-info { width: 100%; }
+    .saved-item .tag { margin-left: auto; }
+
+    /* Status boxes */
+    .status-row { gap: 8px; }
+    .status-box { min-width: 80px; padding: 10px 12px; }
+    .status-box .num { font-size: 20px; }
+
+    /* Toast bottom padding on mobile */
+    #toast { bottom: 16px !important; right: 16px !important; left: 16px !important; text-align: center; }
+
+    /* Avancement grid already handled above */
+    .avancement-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── PRINT RANGE CONTROLS ── */
+  .print-range-controls {
+    display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+  }
+  @media (max-width: 640px) {
+    .print-range-controls { width: 100%; }
+  }
+
+  /* ── PRINT HEADER (visible uniquement à l'impression) ── */
+  #print-header { display: none; }
+
+  /* ── PRINT ── */
+  @media print {
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+    html, body {
+      width: 297mm; height: 210mm;
+      margin: 0; padding: 0;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    header, nav, .btn, .btn-row, .add-task-btn, .del,
+    .planning-controls, .modal-overlay { display: none !important; }
+
+    .section { display: none !important; }
+    .section.active {
+      display: block !important;
+      padding: 6mm 8mm;
+      margin: 0;
+      width: 297mm;
+      box-sizing: border-box;
+    }
+
+    #print-header {
+      display: block !important;
+      margin-bottom: 3mm;
+      padding-bottom: 2.5mm;
+      border-bottom: 2px solid #1a1a1a;
+    }
+    .print-header-grid { display: flex; justify-content: space-between; align-items: center; }
+    .print-col-left { display: flex; flex-direction: column; gap: 1pt; }
+    .print-entreprise { font-size: 13pt; font-weight: 700; color: #1a1a1a; }
+    .print-technicien { font-size: 11pt; color: #444; }
+    .print-title { font-size: 22pt; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #1a1a1a; }
+    .print-col-right { text-align: right; }
+    .print-periode-label { font-size: 9.5pt; color: #888; }
+    .print-semaine-range { font-size: 12.5pt; font-weight: 700; color: #1a1a1a; }
+
+    .card { border: none !important; padding: 0 !important; box-shadow: none !important; margin: 0 !important; }
+    .table-wrapper { overflow: visible; width: 100%; }
+
+    table.planning {
+      width: 100%;
+      min-width: unset;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 12pt;
+    }
+    table.planning th {
+      background: #1a1a1a !important; color: #fff !important;
+      padding: 6pt 4pt; font-size: 11.5pt; font-weight: 600;
+      text-align: center; border: 1px solid #333;
+    }
+    table.planning th.corps-col { width: 14%; text-align: left; padding-left: 6pt; }
+    table.planning td { border: 1px solid #ccc; padding: 3pt; vertical-align: top; }
+    table.planning td.corps-name {
+      width: 14%; font-size: 12pt; font-weight: 700;
+      padding: 4pt 6pt; vertical-align: middle;
+      background: #f5f3ee !important;
+    }
+    table.planning td.day-cell { width: 14.3%; }
+    .cell-inner { min-height: 26pt; padding: 2pt; display: flex; flex-direction: column; gap: 2pt; }
+    .task-chip {
+      background: #f0b429 !important;
+      border-radius: 2pt; padding: 2.5pt 4pt;
+      font-size: 10.5pt; font-weight: 600;
+      line-height: 1.25;
+      display: block;
+    }
+    .task-chip .del { display: none !important; }
+
+    .corps-GO { background: #e8f4fd !important; border-left: 3px solid #1d6fa4 !important; }
+    .corps-MA { background: #fdf0ef !important; border-left: 3px solid #c0392b !important; }
+    .corps-EL { background: #fffbf0 !important; border-left: 3px solid #f0b429 !important; }
+    .corps-PL { background: #f0faf4 !important; border-left: 3px solid #1a7a4a !important; }
+    .corps-ME { background: #f5f0fd !important; border-left: 3px solid #7b52ab !important; }
+    .corps-PE { background: #fdf5ed !important; border-left: 3px solid #d46b1a !important; }
+    .corps-CA { background: #f0fdf8 !important; border-left: 3px solid #0d9488 !important; }
+    .corps-ET { background: #fdf0f0 !important; border-left: 3px solid #dc2626 !important; }
+  }
+
+  /* ── STATUS ROW ── */
+  .status-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .status-box {
+    flex: 1; min-width: 140px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .status-box .num { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 500; }
+  .status-box .lbl { font-size: 11px; color: var(--ink-faint); margin-top: 2px; }
+
+  /* ── DEL / EDIT CORPS ── */
+  .del-corps {
+    opacity: 0; font-size: 13px; cursor: pointer;
+    padding: 2px 4px; border-radius: 4px;
+    transition: opacity 0.15s, background 0.15s;
+    flex-shrink: 0;
+  }
+  .edit-corps {
+    opacity: 0; font-size: 12px; cursor: pointer;
+    padding: 2px 4px; border-radius: 4px;
+    transition: opacity 0.15s, background 0.15s;
+    flex-shrink: 0;
+  }
+  td.corps-name:hover .del-corps,
+  td.corps-name:hover .edit-corps { opacity: 1; }
+  .del-corps:hover { background: #fde8e8; }
+  .edit-corps:hover { background: #e8f4fd; }
+  td.corps-name { display: flex; align-items: center; gap: 6px; }
+
+
+  /* ── TABLEAU EXÉCUTION INLINE ── */
+  .exec-inline-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; margin-top: 20px;
+  }
+  .exec-inline-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 16px 18px;
+    border-bottom: 1px solid var(--border); flex-wrap: wrap;
+  }
+  .exec-inline-title { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .exec-inline-sub { font-size: 12px; color: var(--ink-faint); margin-top: 2px; }
+
+  table.exec-inline-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  table.exec-inline-table th {
+    background: var(--ink); color: #fff;
+    padding: 9px 14px; font-size: 11px; font-weight: 600;
+    text-align: left; white-space: nowrap;
+  }
+  table.exec-inline-table th.exec-inline-corps-col { width: 22%; }
+  table.exec-inline-table th.exec-inline-pct-col   { width: 130px; text-align: center; }
+  table.exec-inline-table td {
+    padding: 0; border-bottom: 1px solid var(--border-light);
+    vertical-align: middle;
+  }
+  .exec-inline-corps-cell {
+    display: flex; align-items: center; gap: 7px;
+    padding: 10px 14px; font-size: 12px; font-weight: 600;
+  }
+  .exec-inline-tasks-cell { padding: 8px 14px; }
+  .exec-inline-task-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 0; cursor: pointer;
+  }
+  .exec-inline-task-row input[type=checkbox] {
+    accent-color: var(--yellow); width: 15px; height: 15px;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .exec-inline-task-label { font-size: 12px; flex: 1; }
+  .exec-inline-task-label.done { text-decoration: line-through; color: var(--ink-faint); }
+  .exec-inline-pct-cell { text-align: center; padding: 10px 14px; }
+  .exec-inline-pct-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px; font-weight: 700;
+  }
+  .exec-inline-mini-bar {
+    width: 60px; height: 5px; background: #e8e8e8;
+    border-radius: 99px; overflow: hidden; margin: 4px auto 0;
+  }
+  .exec-inline-mini-fill { height: 100%; border-radius: 99px; }
+
+  .exec-inline-total-row td {
+    padding: 13px 14px;
+    background: #f8f7f4; border-top: 2px solid var(--ink);
+    font-size: 13px; font-weight: 700;
+  }
+  .exec-inline-total-pct {
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 22px; font-weight: 900;
+    color: var(--yellow);
+  }
+
+  /* ── PRINT rapport exécution ── */
+  @media print {
+    @page { size: A4 landscape; margin: 10mm 12mm; }
+
+    body.print-exec-report * { display: none !important; }
+    body.print-exec-report #exec-print-zone,
+    body.print-exec-report #exec-print-zone * { display: revert !important; }
+    body.print-exec-report table.exec-inline-table thead,
+    body.print-exec-report table.exec-inline-table tbody,
+    body.print-exec-report table.exec-inline-table tfoot,
+    body.print-exec-report table.exec-inline-table tr { display: revert !important; }
+
+    #exec-print-zone {
+      position: fixed; top: 0; left: 0; width: 100%;
+      padding: 0; background: #fff; font-family: 'Inter', sans-serif;
+    }
+    .exec-print-title { font-size: 20pt; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3mm; }
+    .exec-print-meta { font-size: 11pt; color: #444; margin-bottom: 5mm; line-height: 1.5; }
+
+    table.exec-inline-table {
+      width: 100%; border-collapse: collapse; font-size: 12pt;
+      table-layout: fixed;
+    }
+    table.exec-inline-table th {
+      background: #1a1a1a !important; color: #fff !important;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      padding: 6pt 8pt; font-size: 12pt; font-weight: 700;
+      border: 1px solid #333;
+    }
+    table.exec-inline-table th.exec-inline-corps-col { width: 18%; }
+    table.exec-inline-table th.exec-inline-pct-col { width: 14%; }
+    table.exec-inline-table td {
+      border: 1px solid #ccc; padding: 0; vertical-align: top;
+    }
+    .exec-inline-corps-cell {
+      font-size: 12.5pt !important; font-weight: 700 !important;
+      padding: 7pt 9pt !important;
+    }
+    .exec-inline-tasks-cell { padding: 5pt 9pt !important; }
+    .exec-inline-task-row { padding: 3pt 0 !important; }
+    .exec-inline-task-label { font-size: 11.5pt !important; line-height: 1.35; }
+    .exec-inline-pct-cell { padding: 7pt 9pt !important; }
+    .exec-inline-pct-val { font-size: 16pt !important; }
+    .exec-inline-mini-bar { display: none !important; }
+
+    .exec-inline-total-row td {
+      padding: 9pt 9pt !important;
+      background: #f0efe9 !important; border-top: 2px solid #1a1a1a !important;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      font-size: 13pt !important;
+    }
+    .exec-inline-total-pct { font-size: 24pt !important; }
+    .exec-inline-header { display: none !important; }
+    .corps-dot { width: 9px !important; height: 9px !important; }
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    text-align: center; padding: 40px 20px;
+    color: var(--ink-faint); font-size: 13px;
+  }
+  .empty .icon { font-size: 36px; margin-bottom: 10px; }
+
+  /* ── TAUX D'EXÉCUTION ── */
+  .exec-header-row {
+    display: flex; align-items: center; gap: 12px;
+    flex-wrap: wrap; margin-bottom: 16px;
+  }
+  .exec-gauge-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 22px; margin-bottom: 18px;
+  }
+  .exec-gauge-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .exec-gauge-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .exec-gauge-sub { font-size: 12px; color: var(--ink-faint); margin-top: 3px; }
+  .exec-pct-big {
+    font-family: 'DM Mono', monospace;
+    font-size: 44px; font-weight: 700; line-height: 1;
+    color: var(--yellow);
+  }
+  .exec-bar-bg {
+    width: 100%; height: 14px; background: #2a2a2a;
+    border-radius: 99px; overflow: hidden; margin-bottom: 14px;
+  }
+  .exec-bar-fill {
+    height: 100%; background: var(--yellow);
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .exec-bar-fill.green { background: #22c55e; }
+  .exec-bar-fill.orange { background: #f97316; }
+  .exec-legend-row {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .exec-legend-chip {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--ink-faint);
+  }
+  .exec-legend-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+
+  /* Corps card */
+  .exec-corps-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; margin-bottom: 12px; overflow: hidden;
+  }
+  .exec-corps-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px; cursor: pointer;
+    user-select: none;
+  }
+  .exec-corps-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .exec-corps-name { font-size: 13px; font-weight: 600; flex: 1; }
+  .exec-corps-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; font-weight: 700; color: var(--yellow);
+    min-width: 38px; text-align: right;
+  }
+  .exec-corps-bar-bg {
+    flex: 2; max-width: 120px; height: 6px;
+    background: #2a2a2a; border-radius: 99px; overflow: hidden;
+  }
+  .exec-corps-bar-fill {
+    height: 100%; background: var(--yellow);
+    border-radius: 99px; transition: width 0.4s ease;
+  }
+  .exec-corps-weight {
+    font-size: 10px; color: var(--ink-faint);
+    background: #2a2a2a; border-radius: 4px;
+    padding: 2px 6px; min-width: 52px; text-align: center;
+  }
+  .exec-corps-chevron { font-size: 11px; color: var(--ink-faint); transition: transform 0.2s; }
+  .exec-corps-card.collapsed .exec-corps-chevron { transform: rotate(-90deg); }
+
+  /* Tâches */
+  .exec-tasks-body { padding: 0 16px 14px 16px; }
+  .exec-day-group { margin-bottom: 10px; }
+  .exec-day-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ink-faint);
+    margin-bottom: 5px; padding-top: 6px;
+    border-top: 1px solid var(--border);
+  }
+  .exec-task-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 7px 8px; border-radius: 7px;
+    margin-bottom: 3px; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .exec-task-row:hover { background: #232323; }
+  .exec-task-row input[type=checkbox] {
+    accent-color: var(--yellow); width: 16px; height: 16px;
+    cursor: pointer; flex-shrink: 0; margin-top: 1px;
+  }
+  .exec-task-label { font-size: 12px; flex: 1; line-height: 1.4; }
+  .exec-task-label.done {
+    text-decoration: line-through; color: var(--ink-faint);
+  }
+  .exec-task-weight-badge {
+    font-size: 10px; font-weight: 600;
+    background: #2a2a2a; color: var(--ink-faint);
+    border-radius: 4px; padding: 1px 6px;
+    min-width: 36px; text-align: center; flex-shrink: 0;
+  }
+  .exec-task-weight-badge.heavy {
+    background: #3a2f00; color: var(--yellow);
+  }
+
+  /* Alerte pondération */
+  .exec-weight-info {
+    font-size: 11px; color: var(--ink-faint);
+    background: #1e1e1e; border: 1px solid #333;
+    border-radius: 8px; padding: 10px 14px;
+    margin-bottom: 16px; line-height: 1.6;
+  }
+  .exec-weight-info strong { color: var(--ink); }
+  .exec-empty {
+    text-align: center; padding: 40px 20px;
+    color: var(--ink-faint); font-size: 13px;
+  }
+  .exec-empty .icon { font-size: 36px; margin-bottom: 10px; }
+
+  /* ── Contrôles de plage ── */
+  .exec-controls-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px; margin-bottom: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .exec-mode-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .exec-mode-btn {
+    padding: 6px 14px; border-radius: 99px;
+    border: 1px solid var(--border); background: transparent;
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    color: var(--ink-light); transition: all 0.15s;
+  }
+  .exec-mode-btn:hover { border-color: var(--yellow); color: var(--ink); }
+  .exec-mode-btn.active {
+    background: var(--yellow); border-color: var(--yellow);
+    color: #1a1a1a; font-weight: 700;
+  }
+  .exec-nav-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .exec-range-label {
+    font-size: 13px; font-weight: 600; color: var(--ink);
+    flex: 1; text-align: center; min-width: 160px;
+  }
+  .exec-libre-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding-top: 4px;
+  }
+  .exec-libre-row label { font-size: 12px; color: var(--ink-faint); }
+  .exec-libre-row input[type=date] { font-size: 12px; padding: 5px 8px; }
+
+  /* Groupe semaine dans la liste */
+  .exec-week-group {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; margin-bottom: 14px; overflow: hidden;
+  }
+  .exec-week-title {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 16px;
+    background: #f8f7f4; border-bottom: 1px solid var(--border);
+  }
+  .exec-week-title-left { font-size: 12px; font-weight: 700; color: var(--ink); }
+  .exec-week-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; font-weight: 700; color: var(--yellow);
+  }
+  .exec-week-bar-bg {
+    flex: 1; max-width: 100px; height: 5px;
+    background: #e8e8e8; border-radius: 99px; overflow: hidden; margin: 0 10px;
+  }
+  .exec-week-bar-fill { height: 100%; background: var(--yellow); border-radius: 99px; }
+  .exec-week-body { padding: 10px 14px 14px; }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <div class="header-icon">🏗️</div>
+    <div>
+      <h1>Outil Technicien de Chantier</h1>
+      <p id="chantier-label">— Entrez le nom du chantier ci-dessous</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+    <input id="chantier-name" type="text" placeholder="Nom du chantier…"
+      style="width:180px;background:#333;border-color:#555;color:#fff;font-size:13px;"
+      oninput="document.getElementById('chantier-label').textContent = this.value || '— Entrez le nom du chantier ci-dessous'">
+    <input id="print-entreprise-input" type="text" placeholder="Nom de l'entreprise…"
+      style="width:180px;background:#333;border-color:#555;color:#fff;font-size:13px;">
+    <input id="print-technicien-input" type="text" placeholder="Nom du technicien…"
+      style="width:160px;background:#333;border-color:#555;color:#fff;font-size:13px;">
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <button class="active" onclick="showSection('planning', this)">📅 Planning hebdomadaire</button>
+  <button onclick="showSection('rapport', this)">📋 Rapport d'avancement</button>
+  <button onclick="showSection('materiaux', this)">📦 Demande de matériaux</button>
+  <button onclick="showSection('execution', this)">📊 Taux d'exécution</button>
+  <button onclick="showSection('rapport-exec', this)">✅ Rapport d'exécution</button>
+  <button onclick="showSection('archives', this)">🗂️ Archives <span class="badge" id="archive-badge">0</span></button>
+</nav>
+
+<!-- EN-TÊTE IMPRESSION (caché à l'écran, visible uniquement à l'impression) -->
+<div id="print-header">
+  <div class="print-header-grid">
+    <div class="print-col-left">
+      <div class="print-entreprise" id="ph-entreprise">Entreprise</div>
+      <div class="print-technicien" id="ph-technicien">Technicien</div>
+    </div>
+    <div class="print-title">PLANNING</div>
+    <div class="print-col-right">
+      <div class="print-periode-label">Période</div>
+      <div class="print-semaine-range" id="ph-periode">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 1 — PLANNING
+════════════════════════════════════════════════ -->
+<section class="section active" id="planning">
+
+  <div class="planning-controls">
+    <div class="week-nav">
+      <button class="btn btn-outline btn-sm" onclick="changeWeek(-1)"><span class="hide-mobile">← Semaine préc.</span><span class="show-mobile">←</span></button>
+      <span class="week-label" id="week-label">Sem. — —</span>
+      <button class="btn btn-outline btn-sm" onclick="changeWeek(1)"><span class="hide-mobile">Semaine suiv. →</span><span class="show-mobile">→</span></button>
+    </div>
+    <!-- Plage d'impression -->
+    <div class="print-range-controls">
+      <span style="font-size:12px;font-weight:500;color:#5a5a5a;">Imprimer :</span>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <label style="font-size:12px;color:#5a5a5a;">Du</label>
+        <input type="date" id="print-from" style="font-size:12px;padding:5px 8px;width:auto;">
+        <label style="font-size:12px;color:#5a5a5a;">au</label>
+        <input type="date" id="print-to" style="font-size:12px;padding:5px 8px;width:auto;">
+      </div>
+    </div>
+    <div style="flex:1"></div>
+    <button class="btn btn-outline btn-sm" onclick="doPrint()">🖨️ <span class="hide-mobile">Imprimer</span></button>
+    <button class="btn btn-outline btn-sm" onclick="exportPlanningWord()">📄 <span class="hide-mobile">Export Word</span></button>
+    <button class="btn btn-yellow btn-sm" onclick="savePlanning()">💾 <span class="hide-mobile">Sauvegarder</span></button>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="table-wrapper">
+      <table class="planning" id="planning-table">
+        <thead>
+          <tr>
+            <th class="corps-col">Corps de travaux</th>
+            <th id="th-lun">Lundi</th>
+            <th id="th-mar">Mardi</th>
+            <th id="th-mer">Mercredi</th>
+            <th id="th-jeu">Jeudi</th>
+            <th id="th-ven">Vendredi</th>
+            <th id="th-sam">Samedi</th>
+          </tr>
+        </thead>
+        <tbody id="planning-body">
+          <!-- Généré par JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="openAddCorps()">+ Ajouter un corps de travaux</button>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 2 — RAPPORT
+════════════════════════════════════════════════ -->
+<section class="section" id="rapport">
+
+  <div class="card">
+    <div class="card-title"><span>📋</span> Informations générales</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Date du rapport</label>
+        <input type="date" id="r-date">
+      </div>
+      <div class="form-group">
+        <label>N° de rapport</label>
+        <input type="text" id="r-num" placeholder="Ex: RAP-2024-001">
+      </div>
+      <div class="form-group">
+        <label>Technicien responsable</label>
+        <input type="text" id="r-tech" placeholder="Votre nom">
+      </div>
+      <div class="form-group">
+        <label>Météo du jour</label>
+        <select id="r-meteo">
+          <option>☀️ Ensoleillé</option>
+          <option>⛅ Nuageux</option>
+          <option>🌧️ Pluie</option>
+          <option>⛈️ Orage</option>
+          <option>💨 Vent fort</option>
+          <option>🌡️ Chaleur excessive</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📊</span> Avancement par corps de travaux</div>
+    <div class="avancement-grid" id="avancement-grid">
+      <!-- Généré par JS -->
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📝</span> Observations & remarques</div>
+    <div class="form-grid">
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Travaux réalisés aujourd'hui</label>
+        <textarea id="r-realises" placeholder="Décrire les travaux effectués…" rows="3"></textarea>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Travaux prévus demain</label>
+        <textarea id="r-prevus" placeholder="Décrire les travaux prévus…" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Problèmes / Blocages</label>
+        <textarea id="r-problemes" placeholder="Signaler tout problème rencontré…" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Main d'œuvre présente</label>
+        <textarea id="r-mdo" placeholder="Effectifs présents par corps…" rows="3"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimer le rapport</button>
+    <button class="btn btn-yellow" onclick="saveRapport()">💾 Sauvegarder</button>
+    <button class="btn btn-outline" onclick="clearRapport()">🗑️ Effacer</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 3 — MATERIAUX
+════════════════════════════════════════════════ -->
+<section class="section" id="materiaux">
+
+  <div class="card">
+    <div class="card-title"><span>📦</span> Fiche de demande de matériaux / fournitures</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Date de demande</label>
+        <input type="date" id="m-date">
+      </div>
+      <div class="form-group">
+        <label>N° de demande</label>
+        <input type="text" id="m-num" placeholder="DM-2024-001">
+      </div>
+      <div class="form-group">
+        <label>Demandeur</label>
+        <input type="text" id="m-demandeur" placeholder="Votre nom">
+      </div>
+      <div class="form-group">
+        <label>Date de livraison souhaitée</label>
+        <input type="date" id="m-livraison">
+      </div>
+      <div class="form-group">
+        <label>Corps de travaux concerné</label>
+        <select id="m-corps">
+          <option value="">— Choisir —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Urgence</label>
+        <select id="m-urgence">
+          <option value="normale">🟢 Normale</option>
+          <option value="urgente">🟡 Urgente</option>
+          <option value="critique">🔴 Critique</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📋</span> Liste des articles</div>
+    <table class="mat-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Désignation</th>
+          <th>Unité</th>
+          <th>Quantité</th>
+          <th>Référence / Marque</th>
+          <th>Observations</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="mat-body">
+        <!-- Lignes dynamiques -->
+      </tbody>
+    </table>
+    <div class="btn-row">
+      <button class="btn btn-outline btn-sm" onclick="addMatRow()">+ Ajouter une ligne</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="form-group">
+      <label>Observations générales</label>
+      <textarea id="m-obs" placeholder="Précisions supplémentaires sur la commande…" rows="3"></textarea>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimer la fiche</button>
+    <button class="btn btn-yellow" onclick="saveMateriau()">💾 Sauvegarder</button>
+    <button class="btn btn-outline" onclick="clearMateriau()">🗑️ Effacer</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 4 — TAUX D'EXÉCUTION
+════════════════════════════════════════════════ -->
+<section class="section" id="execution">
+
+  <!-- Contrôles de plage -->
+  <div class="exec-controls-card">
+    <div class="exec-mode-row">
+      <button class="exec-mode-btn active" id="em-sem"   onclick="execSetMode('semaine')">Semaine</button>
+      <button class="exec-mode-btn"        id="em-2sem"  onclick="execSetMode('2semaines')">2 semaines</button>
+      <button class="exec-mode-btn"        id="em-mois"  onclick="execSetMode('mois')">Mois</button>
+      <button class="exec-mode-btn"        id="em-3mois" onclick="execSetMode('3mois')">3 mois</button>
+      <button class="exec-mode-btn"        id="em-libre" onclick="execSetMode('libre')">Plage libre</button>
+    </div>
+    <div class="exec-nav-row">
+      <button class="btn btn-outline btn-sm" onclick="execNavPrev()">← Préc.</button>
+      <span class="exec-range-label" id="exec-range-label">—</span>
+      <button class="btn btn-outline btn-sm" onclick="execNavNext()">Suiv. →</button>
+      <button class="btn btn-outline btn-sm" onclick="execGoToday()">Aujourd'hui</button>
+      <button class="btn btn-outline btn-sm" onclick="execSyncFromPlanning()">🔄 Planning courant</button>
+    </div>
+    <div class="exec-libre-row" id="exec-libre-row" style="display:none">
+      <label>Du</label>
+      <input type="date" id="exec-from-date">
+      <label>au</label>
+      <input type="date" id="exec-to-date">
+      <button class="btn btn-yellow btn-sm" onclick="execApplyLibre()">Appliquer</button>
+    </div>
+  </div>
+
+  <!-- Jauge globale -->
+  <div class="exec-gauge-card">
+    <div class="exec-gauge-top">
+      <div>
+        <div class="exec-gauge-title">Taux d'exécution global</div>
+        <div class="exec-gauge-sub" id="exec-summary-text">0 tâche exécutée sur 0</div>
+      </div>
+      <div class="exec-pct-big" id="exec-pct-big">0%</div>
+    </div>
+    <div class="exec-bar-bg">
+      <div class="exec-bar-fill" id="exec-bar-global" style="width:0%"></div>
+    </div>
+    <div class="exec-legend-row" id="exec-legend-row"></div>
+  </div>
+
+  <!-- Détail par semaine + tâches -->
+  <div id="exec-corps-list"></div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION — RAPPORT D'EXÉCUTION HEBDOMADAIRE
+════════════════════════════════════════════════ -->
+<section class="section" id="rapport-exec">
+
+  <div class="exec-inline-card" id="exec-inline-card">
+    <div class="exec-inline-header">
+      <div>
+        <div class="exec-inline-title">✅ Rapport d'exécution hebdomadaire</div>
+        <div class="exec-inline-sub" id="exec-inline-period">—</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-outline btn-sm" onclick="execInlineNavPrev()">← Semaine préc.</button>
+        <button class="btn btn-outline btn-sm" onclick="execInlineNavNext()">Semaine suiv. →</button>
+        <button class="btn btn-outline btn-sm" onclick="exportExecWord()">📄 Export Word</button>
+        <button class="btn btn-yellow btn-sm" onclick="printExecReport()">🖨️ Imprimer rapport</button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="exec-inline-table" id="exec-inline-table">
+        <thead>
+          <tr>
+            <th class="exec-inline-corps-col">Corps de travaux</th>
+            <th>Tâches</th>
+            <th class="exec-inline-pct-col">Exécution</th>
+          </tr>
+        </thead>
+        <tbody id="exec-inline-body">
+          <!-- généré JS -->
+        </tbody>
+        <tfoot>
+          <tr class="exec-inline-total-row">
+            <td colspan="2"><strong>TAUX GLOBAL D'EXÉCUTION</strong></td>
+            <td class="exec-inline-total-pct" id="exec-inline-total">0%</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 5 — ARCHIVES
+════════════════════════════════════════════════ -->
+<section class="section" id="archives">
+  <div class="status-row" id="archive-stats">
+    <div class="status-box"><div class="num" id="s-plannings">0</div><div class="lbl">Plannings</div></div>
+    <div class="status-box"><div class="num" id="s-rapports">0</div><div class="lbl">Rapports</div></div>
+    <div class="status-box"><div class="num" id="s-materiaux">0</div><div class="lbl">Demandes matériaux</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>🗂️</span> Fiches sauvegardées</div>
+    <div class="saved-list" id="saved-list">
+      <div class="empty"><div class="icon">📂</div>Aucune fiche sauvegardée pour l'instant.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     MODAL — Ajouter une tâche
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="task-modal">
+  <div class="modal">
+    <h3 id="task-modal-title">Ajouter une tâche</h3>
+    <div class="form-group">
+      <label>Description de la tâche</label>
+      <input type="text" id="task-input" placeholder="Ex: Coulage dallage, Pose carrelage…" maxlength="80">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('task-modal')">Annuler</button>
+      <button class="btn btn-yellow" id="task-modal-confirm" onclick="confirmAddTask()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL — Ajouter / Modifier corps -->
+<div class="modal-overlay" id="corps-modal">
+  <div class="modal">
+    <h3 id="corps-modal-title">Ajouter un corps de travaux</h3>
+    <div class="form-group">
+      <label>Nom du corps de travaux</label>
+      <input type="text" id="corps-input" placeholder="Ex: Étanchéité, Charpente…">
+    </div>
+    <div class="form-group" style="margin-top:12px">
+      <label>Couleur d'identification</label>
+      <input type="color" id="corps-color" value="#f0b429" style="height:36px;padding:2px 4px;cursor:pointer">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('corps-modal')">Annuler</button>
+      <button class="btn btn-yellow" id="corps-modal-confirm" onclick="confirmAddCorps()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     JS
+════════════════════════════════════════════════ -->
+<script>
+// ── STATE ──────────────────────────────────────
+const CORPS_DEFAULT = [
+  { id: 'GO', label: 'Gros Œuvre', color: '#1d6fa4' },
+  { id: 'MA', label: 'Maçonnerie', color: '#c0392b' },
+  { id: 'EL', label: 'Électricité', color: '#e6a817' },
+  { id: 'PL', label: 'Plomberie / Sanitaire', color: '#1a7a4a' },
+  { id: 'ME', label: 'Menuiserie', color: '#7b52ab' },
+  { id: 'PE', label: 'Peinture / Revêtement', color: '#d46b1a' },
+  { id: 'CA', label: 'Carrelage / Dallage', color: '#0d9488' },
+  { id: 'ET', label: 'Étanchéité', color: '#dc2626' },
+];
+
+let corpsList = [...CORPS_DEFAULT];
+let planningData = {}; // { 'weekKey': { 'corpsId': { 'lun': [...tasks], ... } } }
+let currentWeekStart = getWeekStart(new Date());
+let pendingCell = null; // { weekKey, corpsId, day }
+let matRowCount = 3;
+let archives = [];
+
+const DAYS = ['lun','mar','mer','jeu','ven','sam'];
+const DAY_LABELS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+
+// ── UTILS ─────────────────────────────────────
+function getWeekStart(d) {
+  const day = d.getDay(); // 0=Sun
+  const diff = (day === 0) ? -6 : 1 - day;
+  const mon = new Date(d);
+  mon.setDate(d.getDate() + diff);
+  mon.setHours(0,0,0,0);
+  return mon;
+}
+function weekKey(d) {
+  return d.toISOString().slice(0,10);
+}
+function formatDate(d) {
+  return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit' });
+}
+function addDays(d, n) {
+  const r = new Date(d);
+  r.setDate(r.getDate() + n);
+  return r;
+}
+function today() {
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  return d;
+}
+
+// ── NAV ──────────────────────────────────────
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'archives') renderArchives();
+  if (id === 'execution') renderExecution();
+  if (id === 'rapport-exec') renderInlineExec();
+}
+
+// ── PLANNING ──────────────────────────────────
+function changeWeek(dir) {
+  currentWeekStart = addDays(currentWeekStart, dir * 7);
+  renderPlanning();
+}
+
+function renderPlanning() {
+  const wk = weekKey(currentWeekStart);
+  if (!planningData[wk]) planningData[wk] = {};
+
+  // Assurer que tous les corps ont leur structure
+  corpsList.forEach(c => {
+    if (!planningData[wk][c.id]) {
+      planningData[wk][c.id] = { lun:[], mar:[], mer:[], jeu:[], ven:[], sam:[] };
+    }
+  });
+
+  // Label semaine
+  const end = addDays(currentWeekStart, 5);
+  document.getElementById('week-label').textContent =
+    `Semaine du ${formatDate(currentWeekStart)} au ${formatDate(end)}`;
+
+  // Headers dates
+  DAYS.forEach((d, i) => {
+    const date = addDays(currentWeekStart, i);
+    const th = document.getElementById('th-' + d);
+    th.textContent = DAY_LABELS[i] + ' ' + formatDate(date);
+    const isToday = date.getTime() === today().getTime();
+    th.style.background = isToday ? '#f0b429' : '';
+    th.style.color = isToday ? '#1a1a1a' : '';
+  });
+
+  // Corps select dans materiaux
+  const sel = document.getElementById('m-corps');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">— Choisir —</option>';
+  corpsList.forEach(c => {
+    sel.innerHTML += `<option value="${c.id}">${c.label}</option>`;
+  });
+  sel.value = prev;
+
+  // Body
+  const tbody = document.getElementById('planning-body');
+  tbody.innerHTML = '';
+
+  corpsList.forEach(c => {
+    const tr = document.createElement('tr');
+    // Nom corps
+    const tdName = document.createElement('td');
+    tdName.className = 'corps-name';
+    tdName.innerHTML = `<span class="corps-dot" style="background:${c.color}"></span><span style="flex:1">${c.label}</span><span class="edit-corps" title="Modifier le nom" onclick="openEditCorps('${c.id}',event)">✏️</span><span class="del-corps" title="Supprimer ce corps" onclick="deleteCorps('${c.id}',event)">🗑</span>`;
+    tr.appendChild(tdName);
+
+    DAYS.forEach(day => {
+      const td = document.createElement('td');
+      td.className = 'day-cell';
+      const inner = document.createElement('div');
+      inner.className = 'cell-inner';
+
+      const tasks = planningData[wk][c.id][day] || [];
+      tasks.forEach((t, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'task-chip';
+        chip.style.background = c.color + '30';
+        chip.style.borderLeft = `3px solid ${c.color}`;
+        chip.innerHTML = `<span style="flex:1;font-size:11px">${t}</span>
+          <span class="edit-task" onclick="openEditTask('${c.id}','${day}',${idx},event)" title="Modifier">✏️</span>
+          <span class="del" onclick="deleteTask('${c.id}','${day}',${idx},event)" title="Supprimer">×</span>`;
+        inner.appendChild(chip);
+      });
+
+      const addBtn = document.createElement('button');
+      addBtn.className = 'add-task-btn';
+      addBtn.textContent = '+ tâche';
+      addBtn.onclick = () => openAddTask(c.id, day);
+      inner.appendChild(addBtn);
+
+      td.appendChild(inner);
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  // Avancement rapport
+  renderAvancement();
+}
+
+function openAddTask(corpsId, day) {
+  const wk = weekKey(currentWeekStart);
+  pendingCell = { wk, corpsId, day, editIdx: null };
+  document.getElementById('task-modal-title').textContent = 'Ajouter une tâche';
+  document.getElementById('task-modal-confirm').textContent = 'Ajouter';
+  document.getElementById('task-input').value = '';
+  openModal('task-modal');
+  setTimeout(() => document.getElementById('task-input').focus(), 50);
+}
+
+function openEditTask(corpsId, day, idx, e) {
+  e.stopPropagation();
+  const wk = weekKey(currentWeekStart);
+  const currentText = planningData[wk][corpsId][day][idx];
+  pendingCell = { wk, corpsId, day, editIdx: idx };
+  document.getElementById('task-modal-title').textContent = 'Modifier la tâche';
+  document.getElementById('task-modal-confirm').textContent = 'Enregistrer';
+  document.getElementById('task-input').value = currentText;
+  openModal('task-modal');
+  setTimeout(() => {
+    const inp = document.getElementById('task-input');
+    inp.focus();
+    inp.select();
+  }, 50);
+}
+
+function confirmAddTask() {
+  const val = document.getElementById('task-input').value.trim();
+  if (!val || !pendingCell) return;
+  const { wk, corpsId, day, editIdx } = pendingCell;
+  if (!planningData[wk]) planningData[wk] = {};
+  if (!planningData[wk][corpsId]) planningData[wk][corpsId] = { lun:[], mar:[], mer:[], jeu:[], ven:[], sam:[] };
+  if (editIdx !== null && editIdx !== undefined) {
+    // Mode édition : remplacer le texte existant
+    planningData[wk][corpsId][day][editIdx] = val;
+  } else {
+    // Mode ajout : ajouter à la fin
+    planningData[wk][corpsId][day].push(val);
+  }
+  closeModal('task-modal');
+  renderPlanning();
+}
+
+function deleteCorps(corpsId, e) {
+  e.stopPropagation();
+  const corps = corpsList.find(c => c.id === corpsId);
+  if (!corps) return;
+  if (!confirm('Supprimer "' + corps.label + '" ? Toutes ses tâches seront effacées.')) return;
+  corpsList = corpsList.filter(c => c.id !== corpsId);
+  // Purge toutes les données planning liées
+  Object.keys(planningData).forEach(wk => {
+    delete planningData[wk][corpsId];
+  });
+  renderPlanning();
+}
+
+function deleteTask(corpsId, day, idx, e) {
+  e.stopPropagation();
+  const wk = weekKey(currentWeekStart);
+  planningData[wk][corpsId][day].splice(idx, 1);
+  renderPlanning();
+}
+
+function savePlanning() {
+  const wk = weekKey(currentWeekStart);
+  const end = addDays(currentWeekStart, 5);
+  archives.push({
+    type: 'planning',
+    title: `Planning — Sem. ${formatDate(currentWeekStart)} au ${formatDate(end)}`,
+    date: new Date().toLocaleDateString('fr-FR'),
+    data: JSON.stringify(planningData[wk])
+  });
+  updateArchiveBadge();
+  showToast('Planning sauvegardé ✓');
+}
+
+// ── CORPS ─────────────────────────────────────
+let pendingCorpsEdit = null; // id du corps en cours d'édition, ou null si mode ajout
+
+function openAddCorps() {
+  pendingCorpsEdit = null;
+  document.getElementById('corps-modal-title').textContent = 'Ajouter un corps de travaux';
+  document.getElementById('corps-modal-confirm').textContent = 'Ajouter';
+  document.getElementById('corps-input').value = '';
+  document.getElementById('corps-color').value = '#f0b429';
+  openModal('corps-modal');
+  setTimeout(() => document.getElementById('corps-input').focus(), 50);
+}
+
+function openEditCorps(corpsId, e) {
+  e.stopPropagation();
+  const corps = corpsList.find(c => c.id === corpsId);
+  if (!corps) return;
+  pendingCorpsEdit = corpsId;
+  document.getElementById('corps-modal-title').textContent = 'Modifier le corps de travaux';
+  document.getElementById('corps-modal-confirm').textContent = 'Enregistrer';
+  document.getElementById('corps-input').value = corps.label;
+  document.getElementById('corps-color').value = corps.color;
+  openModal('corps-modal');
+  setTimeout(() => {
+    const inp = document.getElementById('corps-input');
+    inp.focus();
+    inp.select();
+  }, 50);
+}
+
+function confirmAddCorps() {
+  const label = document.getElementById('corps-input').value.trim();
+  const color = document.getElementById('corps-color').value;
+  if (!label) return;
+
+  if (pendingCorpsEdit) {
+    // Mode édition : on met à jour le corps existant (les données planning restent liées au même id)
+    const corps = corpsList.find(c => c.id === pendingCorpsEdit);
+    if (corps) {
+      corps.label = label;
+      corps.color = color;
+    }
+  } else {
+    // Mode ajout
+    const id = 'C' + Date.now();
+    corpsList.push({ id, label, color });
+    const wk = weekKey(currentWeekStart);
+    if (!planningData[wk]) planningData[wk] = {};
+    planningData[wk][id] = { lun:[], mar:[], mer:[], jeu:[], ven:[], sam:[] };
+  }
+
+  pendingCorpsEdit = null;
+  closeModal('corps-modal');
+  renderPlanning();
+}
+
+// ── RAPPORT ───────────────────────────────────
+function renderAvancement() {
+  const grid = document.getElementById('avancement-grid');
+  grid.innerHTML = '';
+  corpsList.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'progress-item';
+    const savedPct = div.dataset.pct || 0;
+    div.innerHTML = `
+      <div class="progress-header">
+        <span class="progress-label"><span class="corps-dot" style="background:${c.color}"></span>${c.label}</span>
+        <span class="progress-pct" id="pct-label-${c.id}">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="pct-bar-${c.id}" style="width:0%"></div>
+      </div>
+      <input type="range" min="0" max="100" value="0" id="pct-${c.id}"
+        style="width:100%;margin-top:8px;cursor:pointer;accent-color:${c.color}"
+        oninput="updatePct('${c.id}', this.value, '${c.color}')">
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function updatePct(id, val, color) {
+  document.getElementById('pct-label-' + id).textContent = val + '%';
+  const bar = document.getElementById('pct-bar-' + id);
+  bar.style.width = val + '%';
+  bar.style.background = val >= 100 ? '#1a7a4a' : val >= 70 ? color : val >= 40 ? color : '#c0392b';
+}
+
+function saveRapport() {
+  archives.push({
+    type: 'rapport',
+    title: `Rapport — ${document.getElementById('r-num').value || 'Sans N°'} — ${document.getElementById('r-date').value}`,
+    date: new Date().toLocaleDateString('fr-FR'),
+    data: {
+      date: document.getElementById('r-date').value,
+      num: document.getElementById('r-num').value,
+      tech: document.getElementById('r-tech').value,
+      meteo: document.getElementById('r-meteo').value,
+      realises: document.getElementById('r-realises').value,
+      prevus: document.getElementById('r-prevus').value,
+    }
+  });
+  updateArchiveBadge();
+  showToast('Rapport sauvegardé ✓');
+}
+
+function clearRapport() {
+  ['r-date','r-num','r-tech','r-realises','r-prevus','r-problemes','r-mdo'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
+// ── MATERIAUX ─────────────────────────────────
+function initMatRows() {
+  const tbody = document.getElementById('mat-body');
+  tbody.innerHTML = '';
+  for (let i = 0; i < 5; i++) addMatRow();
+}
+
+function addMatRow() {
+  matRowCount++;
+  const tbody = document.getElementById('mat-body');
+  const tr = document.createElement('tr');
+  tr.id = 'mat-row-' + matRowCount;
+  tr.innerHTML = `
+    <td style="text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:#9a9a9a">${tbody.children.length + 1}</td>
+    <td><input type="text" placeholder="Désignation de l'article…"></td>
+    <td><input type="text" placeholder="m², ml, kg…" style="width:60px"></td>
+    <td><input type="number" placeholder="0" min="0" style="width:60px"></td>
+    <td><input type="text" placeholder="Réf. / Marque"></td>
+    <td><input type="text" placeholder="Remarques…"></td>
+    <td><button class="btn btn-outline btn-sm" onclick="removeMatRow(${matRowCount})" style="color:#c0392b;border-color:#c0392b;padding:4px 8px;">×</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function removeMatRow(id) {
+  const row = document.getElementById('mat-row-' + id);
+  if (row) row.remove();
+  // Re-numéroter
+  document.querySelectorAll('#mat-body tr').forEach((tr, i) => {
+    tr.cells[0].textContent = i + 1;
+  });
+}
+
+function saveMateriau() {
+  archives.push({
+    type: 'materiau',
+    title: `Demande — ${document.getElementById('m-num').value || 'Sans N°'} — ${document.getElementById('m-date').value}`,
+    date: new Date().toLocaleDateString('fr-FR'),
+    data: {}
+  });
+  updateArchiveBadge();
+  showToast('Fiche matériaux sauvegardée ✓');
+}
+
+function clearMateriau() {
+  ['m-date','m-num','m-demandeur','m-livraison','m-obs'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  initMatRows();
+}
+
+// ── ARCHIVES ──────────────────────────────────
+function renderArchives() {
+  const list = document.getElementById('saved-list');
+  if (archives.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="icon">📂</div>Aucune fiche sauvegardée pour l\'instant.</div>';
+  } else {
+    list.innerHTML = '';
+    [...archives].reverse().forEach((a, idx) => {
+      const realIdx = archives.length - 1 - idx;
+      const tagClass = a.type === 'planning' ? 'tag-planning' : a.type === 'rapport' ? 'tag-rapport' : 'tag-materiau';
+      const tagLabel = a.type === 'planning' ? 'Planning' : a.type === 'rapport' ? 'Rapport' : 'Matériaux';
+      const div = document.createElement('div');
+      div.className = 'saved-item';
+      div.innerHTML = `
+        <div class="saved-item-info">
+          <div class="saved-item-title">${a.title}</div>
+          <div class="saved-item-meta">Sauvegardé le ${a.date}</div>
+        </div>
+        <span class="tag ${tagClass}">${tagLabel}</span>
+        <button class="btn btn-outline btn-sm" onclick="deleteArchive(${realIdx})">🗑️</button>
+      `;
+      list.appendChild(div);
+    });
+  }
+  document.getElementById('s-plannings').textContent = archives.filter(a => a.type === 'planning').length;
+  document.getElementById('s-rapports').textContent = archives.filter(a => a.type === 'rapport').length;
+  document.getElementById('s-materiaux').textContent = archives.filter(a => a.type === 'materiau').length;
+}
+
+function deleteArchive(idx) {
+  archives.splice(idx, 1);
+  updateArchiveBadge();
+  renderArchives();
+}
+
+function updateArchiveBadge() {
+  document.getElementById('archive-badge').textContent = archives.length;
+}
+
+// ── MODALS ────────────────────────────────────
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  if (e.key === 'Enter' && document.getElementById('task-modal').classList.contains('open')) confirmAddTask();
+  if (e.key === 'Enter' && document.getElementById('corps-modal').classList.contains('open')) confirmAddCorps();
+});
+
+// ── TOAST ─────────────────────────────────────
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.style.cssText = `position:fixed;bottom:24px;right:24px;background:#1a1a1a;color:#fff;
+      padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;
+      z-index:999;box-shadow:0 8px 30px rgba(0,0,0,.3);transition:opacity .3s;`;
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2500);
+}
+
+// ── INIT ──────────────────────────────────────
+document.getElementById('r-date').value = new Date().toISOString().slice(0,10);
+document.getElementById('m-date').value = new Date().toISOString().slice(0,10);
+
+// Initialiser les dates d'impression par défaut (semaine courante)
+(function initPrintRange() {
+  const mon = getWeekStart(new Date());
+  const sat = addDays(mon, 5);
+  document.getElementById('print-from').value = mon.toISOString().slice(0,10);
+  document.getElementById('print-to').value = sat.toISOString().slice(0,10);
+})();
+
+
+// ═══════════════════════════════════════════════
+// TABLEAU D'EXÉCUTION INLINE (dans le planning)
+// ═══════════════════════════════════════════════
+
+// Checks inline séparés des checks de la section exécution avancée
+// { weekKey: { taskId: bool } }  — on réutilise execChecks pour cohérence
+
+function execInlineNavPrev() {
+  inlineWeekStart = addDays(inlineWeekStart, -7);
+  renderInlineExec();
+}
+function execInlineNavNext() {
+  inlineWeekStart = addDays(inlineWeekStart, 7);
+  renderInlineExec();
+}
+
+function getInlineTaskId(corpsId, day, text) {
+  const wk = weekKey(inlineWeekStart);
+  return 'inline|' + wk + '|' + corpsId + '|' + day + '|' + text;
+}
+function isInlineDone(corpsId, day, text) {
+  const wk = weekKey(inlineWeekStart);
+  if (!execChecks[wk]) return false;
+  return !!execChecks[wk][getInlineTaskId(corpsId, day, text)];
+}
+function setInlineDone(corpsId, day, text, val) {
+  const wk = weekKey(inlineWeekStart);
+  if (!execChecks[wk]) execChecks[wk] = {};
+  execChecks[wk][getInlineTaskId(corpsId, day, text)] = val;
+}
+
+function renderInlineExec() {
+  const wk = weekKey(inlineWeekStart);
+  const data = planningData[wk] || {};
+
+  // Période label
+  const wkEnd = addDays(inlineWeekStart, 5);
+  document.getElementById('exec-inline-period').textContent =
+    'Semaine du ' + formatDate(inlineWeekStart) + ' au ' + formatDate(wkEnd);
+
+  const tbody = document.getElementById('exec-inline-body');
+  tbody.innerHTML = '';
+
+  let globalTotalW = 0, globalDoneW = 0;
+
+  corpsList.forEach(c => {
+    const cd = data[c.id] || {};
+    // Collecter toutes les tâches du corps sur la semaine
+    const allCorpsTasks = [];
+    DAYS.forEach(day => {
+      (cd[day] || []).forEach(t => {
+        allCorpsTasks.push({ day, text: t, weight: computeTaskWeight(t) });
+      });
+    });
+    if (!allCorpsTasks.length) return;
+
+    let cTotalW = 0, cDoneW = 0;
+    allCorpsTasks.forEach(t => {
+      cTotalW += t.weight;
+      if (isInlineDone(c.id, t.day, t.text)) cDoneW += t.weight;
+    });
+    globalTotalW += cTotalW;
+    globalDoneW  += cDoneW;
+    const cPct = cTotalW > 0 ? Math.round((cDoneW / cTotalW) * 100) : 0;
+    const pctColor = cPct === 100 ? '#22c55e' : cPct >= 60 ? '#f0b429' : '#f97316';
+
+    const tr = document.createElement('tr');
+
+    // Col corps
+    const tdCorps = document.createElement('td');
+    tdCorps.innerHTML = '<div class="exec-inline-corps-cell">' +
+      '<span class="corps-dot" style="background:' + c.color + '"></span>' +
+      c.label + '</div>';
+
+    // Col tâches (avec checkboxes)
+    const tdTasks = document.createElement('td');
+    tdTasks.className = 'exec-inline-tasks-cell';
+    allCorpsTasks.forEach(t => {
+      const done = isInlineDone(c.id, t.day, t.text);
+      const row = document.createElement('div');
+      row.className = 'exec-inline-task-row';
+      row.onclick = function(e) {
+        if (e.target.tagName !== 'INPUT') {
+          const cb = this.querySelector('input[type=checkbox]');
+          cb.checked = !cb.checked;
+          setInlineDone(c.id, t.day, t.text, cb.checked);
+          renderInlineExec();
+        }
+      };
+      const cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.checked = done;
+      (function(ci, dd, tt) {
+        cb.addEventListener('change', function() {
+          setInlineDone(ci, dd, tt, this.checked);
+          renderInlineExec();
+        });
+      })(c.id, t.day, t.text);
+
+      const lbl = document.createElement('div');
+      lbl.className = 'exec-inline-task-label' + (done ? ' done' : '');
+      lbl.textContent = DAY_LABELS[DAYS.indexOf(t.day)] + ' – ' + t.text;
+
+      row.appendChild(cb);
+      row.appendChild(lbl);
+      tdTasks.appendChild(row);
+    });
+
+    // Col pourcentage
+    const tdPct = document.createElement('td');
+    tdPct.className = 'exec-inline-pct-cell';
+    tdPct.innerHTML =
+      '<div class="exec-inline-pct-val" style="color:' + pctColor + '">' + cPct + '%</div>' +
+      '<div class="exec-inline-mini-bar"><div class="exec-inline-mini-fill" style="width:' + cPct + '%;background:' + pctColor + '"></div></div>';
+
+    tr.appendChild(tdCorps);
+    tr.appendChild(tdTasks);
+    tr.appendChild(tdPct);
+    tbody.appendChild(tr);
+  });
+
+  // Total global
+  const globalPct = globalTotalW > 0 ? Math.round((globalDoneW / globalTotalW) * 100) : 0;
+  const totalEl = document.getElementById('exec-inline-total');
+  const gc = globalPct === 100 ? '#22c55e' : globalPct >= 60 ? '#f0b429' : '#f97316';
+  totalEl.textContent = globalPct + '%';
+  totalEl.style.color = gc;
+}
+
+function printExecReport() {
+  const entreprise = document.getElementById('print-entreprise-input').value.trim() || 'Entreprise';
+  const technicien = document.getElementById('print-technicien-input').value.trim() || 'Technicien';
+  const wkEnd = addDays(inlineWeekStart, 5);
+  const periode = 'Semaine du ' + formatDate(inlineWeekStart) + ' au ' + formatDate(wkEnd);
+
+  document.getElementById('epr-meta').innerHTML =
+    '<strong>' + entreprise + '</strong> &nbsp;|&nbsp; Technicien : ' + technicien +
+    ' &nbsp;|&nbsp; ' + periode + ' &nbsp;|&nbsp; Imprimé le ' +
+    new Date().toLocaleDateString('fr-FR');
+
+  // Copier le tableau dans la zone d'impression
+  const tableClone = document.getElementById('exec-inline-table').cloneNode(true);
+  // Convertir les checkboxes en texte ✓ / ○ pour l'impression
+  tableClone.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    const span = document.createElement('span');
+    span.textContent = cb.checked ? '✓ ' : '○ ';
+    span.style.fontWeight = cb.checked ? '700' : '400';
+    span.style.color = cb.checked ? '#22c55e' : '#aaa';
+    cb.parentNode.insertBefore(span, cb);
+    cb.remove();
+  });
+  const holder = document.getElementById('epr-table-holder');
+  holder.innerHTML = '';
+  holder.appendChild(tableClone);
+
+  // Imprimer
+  document.body.classList.add('print-exec-report');
+  document.getElementById('exec-print-zone').style.display = '';
+
+  let ps = document.getElementById('exec-print-style');
+  if (!ps) { ps = document.createElement('style'); ps.id = 'exec-print-style'; document.head.appendChild(ps); }
+  ps.textContent = '@page { size: 297mm 210mm; margin: 10mm 12mm; }';
+
+  window.print();
+
+  // Nettoyer après impression
+  setTimeout(() => {
+    document.body.classList.remove('print-exec-report');
+    document.getElementById('exec-print-zone').style.display = 'none';
+  }, 1000);
+}
+
+
+// ═══════════════════════════════════════════════
+// EXPORT WORD (.docx)
+// ═══════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════
+// EXPORT WORD (.docx) — implémentation autonome
+// Aucune dépendance externe : mini-ZIP (store) + XML OOXML minimal.
+// ═══════════════════════════════════════════════
+
+// ── Mini ZIP writer (méthode "store", sans compression) ──
+function crc32(buf) {
+  let c, table = crc32.table;
+  if (!table) {
+    table = crc32.table = new Uint32Array(256);
+    for (let n = 0; n < 256; n++) {
+      c = n;
+      for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      table[n] = c;
+    }
+  }
+  let crc = 0 ^ (-1);
+  for (let i = 0; i < buf.length; i++) crc = (crc >>> 8) ^ table[(crc ^ buf[i]) & 0xFF];
+  return (crc ^ (-1)) >>> 0;
+}
+
+function strToBytes(str) {
+  return new TextEncoder().encode(str);
+}
+
+function dosDateTime() {
+  // Date/heure DOS fixe (peu importe pour la validité du docx)
+  return { time: 0, date: 0x21 }; // 1980-01-01
+}
+
+function makeZip(files) {
+  // files: [{ name: 'word/document.xml', data: Uint8Array }]
+  const localParts = [];
+  const centralParts = [];
+  let offset = 0;
+  const { time, date } = dosDateTime();
+
+  files.forEach(f => {
+    const nameBytes = strToBytes(f.name);
+    const data = f.data;
+    const crc = crc32(data);
+    const size = data.length;
+
+    // Local file header
+    const lh = new Uint8Array(30 + nameBytes.length);
+    const lv = new DataView(lh.buffer);
+    lv.setUint32(0, 0x04034b50, true);   // signature
+    lv.setUint16(4, 20, true);           // version needed
+    lv.setUint16(6, 0, true);            // flags
+    lv.setUint16(8, 0, true);            // method = store
+    lv.setUint16(10, time, true);
+    lv.setUint16(12, date, true);
+    lv.setUint32(14, crc, true);
+    lv.setUint32(18, size, true);        // compressed size
+    lv.setUint32(22, size, true);        // uncompressed size
+    lv.setUint16(26, nameBytes.length, true);
+    lv.setUint16(28, 0, true);           // extra length
+    lh.set(nameBytes, 30);
+
+    localParts.push(lh, data);
+
+    // Central directory header
+    const ch = new Uint8Array(46 + nameBytes.length);
+    const cv = new DataView(ch.buffer);
+    cv.setUint32(0, 0x02014b50, true);
+    cv.setUint16(4, 20, true);
+    cv.setUint16(6, 20, true);
+    cv.setUint16(8, 0, true);
+    cv.setUint16(10, 0, true);
+    cv.setUint16(12, time, true);
+    cv.setUint16(14, date, true);
+    cv.setUint32(16, crc, true);
+    cv.setUint32(20, size, true);
+    cv.setUint32(24, size, true);
+    cv.setUint16(28, nameBytes.length, true);
+    cv.setUint16(30, 0, true);
+    cv.setUint16(32, 0, true);
+    cv.setUint16(34, 0, true);
+    cv.setUint16(36, 0, true);
+    cv.setUint32(38, 0, true);
+    cv.setUint32(42, offset, true);
+    ch.set(nameBytes, 46);
+
+    centralParts.push(ch);
+    offset += lh.length + data.length;
+  });
+
+  const centralStart = offset;
+  let centralSize = 0;
+  centralParts.forEach(c => centralSize += c.length);
+
+  // End of central directory
+  const eocd = new Uint8Array(22);
+  const ev = new DataView(eocd.buffer);
+  ev.setUint32(0, 0x06054b50, true);
+  ev.setUint16(4, 0, true);
+  ev.setUint16(6, 0, true);
+  ev.setUint16(8, files.length, true);
+  ev.setUint16(10, files.length, true);
+  ev.setUint32(12, centralSize, true);
+  ev.setUint32(16, centralStart, true);
+  ev.setUint16(20, 0, true);
+
+  const allParts = [...localParts, ...centralParts, eocd];
+  let totalLen = 0;
+  allParts.forEach(p => totalLen += p.length);
+  const out = new Uint8Array(totalLen);
+  let pos = 0;
+  allParts.forEach(p => { out.set(p, pos); pos += p.length; });
+  return out;
+}
+
+// ── Échappement XML ──
+function xmlEsc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x2019;');
+}
+
+// ── Construction d'un run de texte Word ──
+// opts: { bold, color (hex sans #), size (demi-points), strike }
+function wRun(text, opts) {
+  opts = opts || {};
+  let rpr = '<w:rPr>';
+  rpr += '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/>';
+  if (opts.bold) rpr += '<w:b/>';
+  if (opts.strike) rpr += '<w:strike/>';
+  if (opts.color) rpr += '<w:color w:val="' + opts.color + '"/>';
+  rpr += '<w:sz w:val="' + (opts.size || 22) + '"/>';
+  rpr += '</w:rPr>';
+  return '<w:r>' + rpr + '<w:t xml:space="preserve">' + xmlEsc(text) + '</w:t></w:r>';
+}
+
+// ── Construction d'un paragraphe ──
+// opts: { align ('left'|'center'), spacingAfter, borderBottom (hex), runs: [...] }
+function wPara(runsXml, opts) {
+  opts = opts || {};
+  let ppr = '<w:pPr>';
+  if (opts.borderBottom) {
+    ppr += '<w:pBdr><w:bottom w:val="single" w:sz="8" w:space="4" w:color="' + opts.borderBottom + '"/></w:pBdr>';
+  }
+  if (opts.spacingAfter !== undefined) ppr += '<w:spacing w:after="' + opts.spacingAfter + '"/>';
+  if (opts.align) ppr += '<w:jc w:val="' + opts.align + '"/>';
+  ppr += '</w:pPr>';
+  return '<w:p>' + ppr + runsXml + '</w:p>';
+}
+
+// ── Construction d'une cellule de tableau ──
+// opts: { widthDxa, shadeHex, vAlign ('center'), marginsTwip:[t,b,l,r], colspan }
+function wCell(contentXml, opts) {
+  opts = opts || {};
+  const w = opts.widthDxa || 1000;
+  let tcpr = '<w:tcPr>';
+  tcpr += '<w:tcW w:w="' + w + '" w:type="dxa"/>';
+  if (opts.colspan) tcpr += '<w:gridSpan w:val="' + opts.colspan + '"/>';
+  tcpr += '<w:tcBorders>' +
+    '<w:top w:val="single" w:sz="4" w:color="CCCCCC"/>' +
+    '<w:left w:val="single" w:sz="4" w:color="CCCCCC"/>' +
+    '<w:bottom w:val="single" w:sz="4" w:color="CCCCCC"/>' +
+    '<w:right w:val="single" w:sz="4" w:color="CCCCCC"/>' +
+  '</w:tcBorders>';
+  if (opts.shadeHex) tcpr += '<w:shd w:val="clear" w:color="auto" w:fill="' + opts.shadeHex + '"/>';
+  const m = opts.marginsTwip || [80, 80, 100, 100];
+  tcpr += '<w:tcMar>' +
+    '<w:top w:w="' + m[0] + '" w:type="dxa"/>' +
+    '<w:left w:w="' + m[2] + '" w:type="dxa"/>' +
+    '<w:bottom w:w="' + m[1] + '" w:type="dxa"/>' +
+    '<w:right w:w="' + m[3] + '" w:type="dxa"/>' +
+  '</w:tcMar>';
+  if (opts.vAlign) tcpr += '<w:vAlign w:val="' + opts.vAlign + '"/>';
+  tcpr += '</w:tcPr>';
+  return '<w:tc>' + tcpr + contentXml + '</w:tc>';
+}
+
+// ── Construction d'une ligne de tableau ──
+function wRow(cellsXml, opts) {
+  opts = opts || {};
+  let trpr = '';
+  if (opts.header) trpr = '<w:trPr><w:tblHeader/></w:trPr>';
+  return '<w:tr>' + trpr + cellsXml + '</w:tr>';
+}
+
+// ── Construction d'un tableau complet ──
+function wTable(rowsXml, colWidthsDxa) {
+  const totalW = colWidthsDxa.reduce((a, b) => a + b, 0);
+  let grid = '<w:tblGrid>';
+  colWidthsDxa.forEach(w => grid += '<w:gridCol w:w="' + w + '"/>');
+  grid += '</w:tblGrid>';
+  const tblpr = '<w:tblPr>' +
+    '<w:tblW w:w="' + totalW + '" w:type="dxa"/>' +
+    '<w:tblBorders>' +
+      '<w:top w:val="single" w:sz="4" w:color="CCCCCC"/>' +
+      '<w:left w:val="single" w:sz="4" w:color="CCCCCC"/>' +
+      '<w:bottom w:val="single" w:sz="4" w:color="CCCCCC"/>' +
+      '<w:right w:val="single" w:sz="4" w:color="CCCCCC"/>' +
+      '<w:insideH w:val="single" w:sz="4" w:color="CCCCCC"/>' +
+      '<w:insideV w:val="single" w:sz="4" w:color="CCCCCC"/>' +
+    '</w:tblBorders>' +
+    '<w:tblLayout w:type="fixed"/>' +
+  '</w:tblPr>';
+  return '<w:tbl>' + tblpr + grid + rowsXml + '</w:tbl>';
+}
+
+// ── Assemble le document.xml complet et génère le buffer .docx ──
+// bodyXml: XML des paragraphes/tableaux ; landscape: bool
+function buildDocxBuffer(bodyXml, landscape) {
+  const pageW = landscape ? 16838 : 11906;
+  const pageH = landscape ? 11906 : 16838;
+  const orient = landscape ? ' w:orient="landscape"' : '';
+
+  const documentXml =
+'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
+'<w:body>' + bodyXml +
+'<w:sectPr>' +
+  '<w:pgSz w:w="' + pageW + '" w:h="' + pageH + '"' + orient + '/>' +
+  '<w:pgMar w:top="567" w:right="567" w:bottom="567" w:left="567" w:header="0" w:footer="0" w:gutter="0"/>' +
+'</w:sectPr>' +
+'</w:body>' +
+'</w:document>';
+
+  const contentTypesXml =
+'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+'<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+'<Default Extension="xml" ContentType="application/xml"/>' +
+'<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+'</Types>';
+
+  const rootRelsXml =
+'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+'</Relationships>';
+
+  const docRelsXml =
+'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+'</Relationships>';
+
+  const files = [
+    { name: '[Content_Types].xml', data: strToBytes(contentTypesXml) },
+    { name: '_rels/.rels', data: strToBytes(rootRelsXml) },
+    { name: 'word/document.xml', data: strToBytes(documentXml) },
+    { name: 'word/_rels/document.xml.rels', data: strToBytes(docRelsXml) }
+  ];
+
+  return makeZip(files);
+}
+
+function downloadDocxBlob(buffer, filename) {
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+}
+
+function hexNoHash(hex) {
+  return (hex || '#999999').replace('#', '').toUpperCase();
+}
+
+// ── EXPORT PLANNING ────────────────────────────
+function exportPlanningWord() {
+  const entreprise = document.getElementById('print-entreprise-input').value.trim() || 'Entreprise';
+  const technicien = document.getElementById('print-technicien-input').value.trim() || 'Technicien';
+  const wkEnd = addDays(currentWeekStart, 5);
+  const periode = 'Semaine du ' + formatDate(currentWeekStart) + ' au ' + formatDate(wkEnd);
+  const wk = weekKey(currentWeekStart);
+  const data = planningData[wk] || {};
+
+  // Largeur A4 paysage, marges 1cm (567 twips chaque côté) => 16838 - 1134 ≈ 15704 DXA
+  const totalWidth = 15700;
+  const corpsColW = Math.round(totalWidth * 0.15);
+  const dayColW = Math.round((totalWidth - corpsColW) / 6);
+  const colWidths = [corpsColW, dayColW, dayColW, dayColW, dayColW, dayColW, dayColW];
+
+  // En-tête du tableau
+  let headerCells = wCell(
+    wPara(wRun('Corps de travaux', { bold: true, color: 'FFFFFF', size: 22 }), { align: 'left' }),
+    { widthDxa: corpsColW, shadeHex: '1A1A1A', vAlign: 'center' }
+  );
+  DAY_LABELS.forEach((label, i) => {
+    headerCells += wCell(
+      wPara(wRun(label, { bold: true, color: 'FFFFFF', size: 22 }), { align: 'center' }),
+      { widthDxa: colWidths[i + 1], shadeHex: '1A1A1A', vAlign: 'center' }
+    );
+  });
+  let rowsXml = wRow(headerCells, { header: true });
+
+  corpsList.forEach(c => {
+    const corpsData = data[c.id] || {};
+    let nameCell = wCell(
+      wPara(wRun(c.label, { bold: true, size: 22 })),
+      { widthDxa: corpsColW, shadeHex: 'F5F3EE', vAlign: 'center', marginsTwip: [100, 100, 120, 80] }
+    );
+
+    let dayCellsXml = '';
+    DAYS.forEach((day, di) => {
+      const tasks = corpsData[day] || [];
+      let paras = '';
+      if (tasks.length) {
+        tasks.forEach(t => {
+          paras += wPara(wRun('• ' + t, { size: 19, color: '1A1A1A' }), { spacingAfter: 60 });
+        });
+      } else {
+        paras = wPara(wRun('', { size: 19 }));
+      }
+      dayCellsXml += wCell(paras, {
+        widthDxa: colWidths[di + 1],
+        marginsTwip: [80, 80, 90, 90]
+      });
+    });
+
+    rowsXml += wRow(nameCell + dayCellsXml);
+  });
+
+  const table = wTable(rowsXml, colWidths);
+
+  const bodyXml =
+    wPara(wRun(entreprise, { bold: true, size: 24 })) +
+    wPara(wRun('Technicien : ' + technicien, { size: 20, color: '444444' }), { spacingAfter: 40 }) +
+    wPara(wRun('PLANNING DE CHANTIER', { bold: true, size: 36 }), { spacingAfter: 60 }) +
+    wPara(wRun(periode, { bold: true, size: 22, color: '1A1A1A' }), { spacingAfter: 200, borderBottom: '1A1A1A' }) +
+    table +
+    wPara('');
+
+  const buf = buildDocxBuffer(bodyXml, true);
+  downloadDocxBlob(buf, 'Planning_' + formatDate(currentWeekStart).replace(/\//g, '-') + '.docx');
+}
+
+// ── EXPORT RAPPORT D'EXÉCUTION ─────────────────
+function exportExecWord() {
+  const entreprise = document.getElementById('print-entreprise-input').value.trim() || 'Entreprise';
+  const technicien = document.getElementById('print-technicien-input').value.trim() || 'Technicien';
+  const wkEnd = addDays(inlineWeekStart, 5);
+  const periode = 'Semaine du ' + formatDate(inlineWeekStart) + ' au ' + formatDate(wkEnd);
+  const wk = weekKey(inlineWeekStart);
+  const data = planningData[wk] || {};
+
+  const totalWidth = 15700;
+  const corpsColW = Math.round(totalWidth * 0.18);
+  const pctColW = Math.round(totalWidth * 0.12);
+  const tasksColW = totalWidth - corpsColW - pctColW;
+  const colWidths = [corpsColW, tasksColW, pctColW];
+
+  let headerCells = '';
+  ['Corps de travaux', 'Tâches', 'Exécution'].forEach((label, i) => {
+    headerCells += wCell(
+      wPara(wRun(label, { bold: true, color: 'FFFFFF', size: 24 }), { align: i === 2 ? 'center' : 'left' }),
+      { widthDxa: colWidths[i], shadeHex: '1A1A1A', vAlign: 'center' }
+    );
+  });
+  let rowsXml = wRow(headerCells, { header: true });
+
+  let globalTotalW = 0, globalDoneW = 0;
+
+  corpsList.forEach(c => {
+    const cd = data[c.id] || {};
+    const allCorpsTasks = [];
+    DAYS.forEach((day, di) => {
+      (cd[day] || []).forEach(t => {
+        allCorpsTasks.push({ day, dayLabel: DAY_LABELS[di], text: t, weight: computeTaskWeight(t) });
+      });
+    });
+    if (!allCorpsTasks.length) return;
+
+    let cTotalW = 0, cDoneW = 0;
+    allCorpsTasks.forEach(t => {
+      cTotalW += t.weight;
+      if (isInlineDone(c.id, t.day, t.text)) cDoneW += t.weight;
+    });
+    globalTotalW += cTotalW; globalDoneW += cDoneW;
+    const cPct = cTotalW > 0 ? Math.round((cDoneW / cTotalW) * 100) : 0;
+    const pctColor = cPct === 100 ? '22C55E' : cPct >= 60 ? 'C8920A' : 'F97316';
+
+    const nameCell = wCell(
+      wPara(wRun(c.label, { bold: true, size: 23 })),
+      { widthDxa: corpsColW, shadeHex: 'F5F3EE', vAlign: 'center', marginsTwip: [100, 100, 120, 80] }
+    );
+
+    let taskParas = '';
+    allCorpsTasks.forEach(t => {
+      const done = isInlineDone(c.id, t.day, t.text);
+      const prefix = done ? '\u2611 ' : '\u2610 ';
+      taskParas += wPara(
+        wRun(prefix + t.dayLabel + ' \u2013 ' + t.text, { size: 21, strike: done, color: done ? '888888' : '000000' }),
+        { spacingAfter: 50 }
+      );
+    });
+    const tasksCell = wCell(taskParas, { widthDxa: tasksColW, marginsTwip: [90, 90, 100, 100] });
+
+    const pctCell = wCell(
+      wPara(wRun(cPct + '%', { bold: true, size: 28, color: pctColor }), { align: 'center' }),
+      { widthDxa: pctColW, vAlign: 'center' }
+    );
+
+    rowsXml += wRow(nameCell + tasksCell + pctCell);
+  });
+
+  const globalPct = globalTotalW > 0 ? Math.round((globalDoneW / globalTotalW) * 100) : 0;
+  const gColor = globalPct === 100 ? '22C55E' : globalPct >= 60 ? 'C8920A' : 'F97316';
+
+  const totalLabelCell = wCell(
+    wPara(wRun("TAUX GLOBAL D'EXÉCUTION", { bold: true, size: 24 })),
+    { widthDxa: corpsColW + tasksColW, shadeHex: 'F0EFE9', vAlign: 'center', marginsTwip: [120, 120, 120, 80], colspan: 2 }
+  );
+  const totalPctCell = wCell(
+    wPara(wRun(globalPct + '%', { bold: true, size: 36, color: gColor }), { align: 'center' }),
+    { widthDxa: pctColW, shadeHex: 'F0EFE9', vAlign: 'center' }
+  );
+  rowsXml += wRow(totalLabelCell + totalPctCell);
+
+  const table = wTable(rowsXml, colWidths);
+
+  const bodyXml =
+    wPara(wRun(entreprise, { bold: true, size: 24 })) +
+    wPara(wRun('Technicien : ' + technicien, { size: 20, color: '444444' }), { spacingAfter: 40 }) +
+    wPara(wRun("RAPPORT D'EXÉCUTION", { bold: true, size: 36 }), { spacingAfter: 60 }) +
+    wPara(wRun(periode + '  \u2014  Imprimé le ' + new Date().toLocaleDateString('fr-FR'), { bold: true, size: 22, color: '1A1A1A' }), { spacingAfter: 200, borderBottom: '1A1A1A' }) +
+    table +
+    wPara('');
+
+  const buf = buildDocxBuffer(bodyXml, true);
+  downloadDocxBlob(buf, 'Rapport_execution_' + formatDate(inlineWeekStart).replace(/\//g, '-') + '.docx');
+}
+
+
+function doPrint() {
+  // Mettre à jour l'en-tête d'impression
+  const entreprise = document.getElementById('print-entreprise-input').value.trim() || 'Entreprise';
+  const technicien = document.getElementById('print-technicien-input').value.trim() || 'Technicien';
+  const from = document.getElementById('print-from').value;
+  const to = document.getElementById('print-to').value;
+
+  document.getElementById('ph-entreprise').textContent = entreprise;
+  document.getElementById('ph-technicien').textContent = 'Technicien : ' + technicien;
+
+  if (from && to) {
+    const d1 = new Date(from + 'T00:00:00');
+    const d2 = new Date(to + 'T00:00:00');
+    document.getElementById('ph-periode').textContent =
+      'Du ' + d1.toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'}) +
+      ' au ' + d2.toLocaleDateString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  } else {
+    const end = addDays(currentWeekStart, 5);
+    document.getElementById('ph-periode').textContent =
+      'Semaine du ' + formatDate(currentWeekStart) + ' au ' + formatDate(end);
+  }
+
+  // Forcer orientation paysage (mobile)
+  let styleEl = document.getElementById("force-landscape");
+  if (!styleEl) { styleEl = document.createElement("style"); styleEl.id = "force-landscape"; document.head.appendChild(styleEl); }
+  styleEl.textContent = "@page { size: 297mm 210mm; margin: 0; }";
+
+  window.print();
+}
+
+
+// ═══════════════════════════════════════════════
+// TAUX D'EXÉCUTION
+// ═══════════════════════════════════════════════
+
+// ── État plage d'exécution ───────────────────
+let execMode = 'semaine'; // semaine | 2semaines | mois | 3mois | libre
+let execRangeStart = getWeekStart(new Date());
+let execRangeEnd   = null; // calculé à chaque render
+let execLibreFrom  = null;
+let execLibreTo    = null;
+// { weekKey: { taskId: bool } }
+let execChecks = {};
+let inlineWeekStart = getWeekStart(new Date());
+
+// ── Pondération ───────────────────────────────
+const HEAVY_KEYWORDS = [
+  'fondation','dalle','coulage','coffrage','ferraillage','béton','chape',
+  'maçonnerie','mur porteur','refend','terrassement','excavation',
+  'installation','réseau','câblage','tirage','tableau électrique',
+  'plomberie','évacuation','alimentation','climatisation','vmc',
+  'menuiserie','charpente','toiture','couverture','étanchéité',
+  'carrelage','revêtement','enduit','crépissage','peinture complète',
+  'plâtrerie','isolation','bardage',
+  'réunion de chantier','plan','étude','inspection','contrôle','réception',
+  'livraison','approvisionnement','commande'
+];
+
+function computeTaskWeight(text) {
+  const t = text.toLowerCase();
+  let s = 1.0;
+  if (text.length > 60) s += 1.5;
+  else if (text.length > 40) s += 0.8;
+  else if (text.length > 25) s += 0.3;
+  let kw = 0;
+  HEAVY_KEYWORDS.forEach(k => { if (t.includes(k)) kw++; });
+  s += kw * 1.2;
+  const nums = text.match(/\d+/g);
+  if (nums && nums.length >= 2) s += 0.5;
+  const comp = (t.match(/\bet\b|\/|\+/g) || []).length;
+  s += comp * 0.4;
+  return Math.round(s * 10) / 10;
+}
+function isHeavyTask(w) { return w >= 2.5; }
+
+// ── Helpers checks ────────────────────────────
+function getTaskId(corpsId, wk, day, text) {
+  return wk + '|' + corpsId + '|' + day + '|' + text;
+}
+function isTaskDone(corpsId, wk, day, text) {
+  return !!(execChecks[wk] && execChecks[wk][getTaskId(corpsId,wk,day,text)]);
+}
+function setTaskDone(corpsId, wk, day, text, val) {
+  if (!execChecks[wk]) execChecks[wk] = {};
+  execChecks[wk][getTaskId(corpsId,wk,day,text)] = val;
+}
+
+// ── Calcul des bornes selon le mode ──────────
+function execComputeRange() {
+  const s = new Date(execRangeStart);
+  let e;
+  if (execMode === 'semaine')    { e = addDays(s, 6); }
+  else if (execMode === '2semaines') { e = addDays(s, 13); }
+  else if (execMode === 'mois')  { e = addDays(s, 29); }
+  else if (execMode === '3mois') { e = addDays(s, 90); }
+  else { // libre
+    return {
+      from: execLibreFrom || s,
+      to:   execLibreTo   || addDays(s, 6)
+    };
+  }
+  return { from: s, to: e };
+}
+
+// ── Collecte toutes les semaines dans la plage ──
+function getWeeksInRange(from, to) {
+  const weeks = [];
+  let cur = getWeekStart(from);
+  const end = getWeekStart(to);
+  while (cur <= end) {
+    weeks.push(new Date(cur));
+    cur = addDays(cur, 7);
+  }
+  return weeks;
+}
+
+// ── Collecte toutes les tâches sur la plage ──
+function getAllTasksForRange() {
+  const { from, to } = execComputeRange();
+  const result = [];
+  const weeks = getWeeksInRange(from, to);
+  weeks.forEach(wkDate => {
+    const wk = weekKey(wkDate);
+    const data = planningData[wk] || {};
+    corpsList.forEach(c => {
+      const cd = data[c.id] || {};
+      DAYS.forEach((day, di) => {
+        const dayDate = addDays(wkDate, di);
+        if (dayDate < from || dayDate > to) return;
+        const tasks = cd[day] || [];
+        tasks.forEach(t => {
+          result.push({ corpsId: c.id, wk, day, text: t, weight: computeTaskWeight(t), wkDate });
+        });
+      });
+    });
+  });
+  return result;
+}
+
+// ── Mode & navigation ─────────────────────────
+function execSetMode(mode) {
+  execMode = mode;
+  document.querySelectorAll('.exec-mode-btn').forEach(b => b.classList.remove('active'));
+  const ids = { semaine:'em-sem', '2semaines':'em-2sem', mois:'em-mois', '3mois':'em-3mois', libre:'em-libre' };
+  document.getElementById(ids[mode]).classList.add('active');
+  document.getElementById('exec-libre-row').style.display = (mode === 'libre') ? 'flex' : 'none';
+  // Recaler le début sur la semaine courante
+  if (mode !== 'libre') execRangeStart = getWeekStart(new Date());
+  renderExecution();
+}
+
+function execNavPrev() {
+  if (execMode === 'semaine')    execRangeStart = addDays(execRangeStart, -7);
+  else if (execMode === '2semaines') execRangeStart = addDays(execRangeStart, -14);
+  else if (execMode === 'mois')  execRangeStart = addDays(execRangeStart, -30);
+  else if (execMode === '3mois') execRangeStart = addDays(execRangeStart, -91);
+  renderExecution();
+}
+function execNavNext() {
+  if (execMode === 'semaine')    execRangeStart = addDays(execRangeStart, 7);
+  else if (execMode === '2semaines') execRangeStart = addDays(execRangeStart, 14);
+  else if (execMode === 'mois')  execRangeStart = addDays(execRangeStart, 30);
+  else if (execMode === '3mois') execRangeStart = addDays(execRangeStart, 91);
+  renderExecution();
+}
+function execGoToday() {
+  execRangeStart = getWeekStart(new Date());
+  renderExecution();
+}
+function execSyncFromPlanning() {
+  execRangeStart = new Date(currentWeekStart);
+  execMode = 'semaine';
+  execSetMode('semaine');
+}
+function execApplyLibre() {
+  const f = document.getElementById('exec-from-date').value;
+  const t = document.getElementById('exec-to-date').value;
+  if (!f || !t) return;
+  execLibreFrom = new Date(f + 'T00:00:00');
+  execLibreTo   = new Date(t + 'T00:00:00');
+  execRangeStart = getWeekStart(execLibreFrom);
+  renderExecution();
+}
+
+// ── Formatage de la plage ─────────────────────
+function formatDateFull(d) {
+  return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+// ── Rendu principal ───────────────────────────
+function renderExecution() {
+  const { from, to } = execComputeRange();
+  const container = document.getElementById('exec-corps-list');
+
+  // Label plage
+  const modeLabels = {
+    semaine: 'Semaine du ', '2semaines': '2 semaines : ', mois: 'Mois du ', '3mois': '3 mois : ', libre: 'Plage : '
+  };
+  document.getElementById('exec-range-label').textContent =
+    (modeLabels[execMode] || '') + formatDateFull(from) + ' → ' + formatDateFull(to);
+
+  const allTasks = getAllTasksForRange();
+
+  if (allTasks.length === 0) {
+    document.getElementById('exec-pct-big').textContent = '—';
+    document.getElementById('exec-summary-text').textContent = 'Aucune tâche sur cette période';
+    document.getElementById('exec-bar-global').style.width = '0%';
+    document.getElementById('exec-legend-row').innerHTML = '';
+    container.innerHTML = '<div class="exec-empty"><div class="icon">📭</div>Aucune tâche dans le planning sur cette période.<br>Ajoutez des tâches ou changez la plage.</div>';
+    return;
+  }
+
+  // ── Calcul global ──
+  let totalW = 0, doneW = 0, doneCnt = 0;
+  allTasks.forEach(t => {
+    totalW += t.weight;
+    if (isTaskDone(t.corpsId, t.wk, t.day, t.text)) { doneW += t.weight; doneCnt++; }
+  });
+  const globalPct = totalW > 0 ? Math.round((doneW / totalW) * 100) : 0;
+
+  const pctEl = document.getElementById('exec-pct-big');
+  pctEl.textContent = globalPct + '%';
+  pctEl.style.color = globalPct === 100 ? '#22c55e' : globalPct >= 60 ? '#f0b429' : '#f97316';
+
+  document.getElementById('exec-summary-text').textContent =
+    doneCnt + ' / ' + allTasks.length + ' tâches cochées — ' +
+    Math.round(doneW*10)/10 + ' pts / ' + Math.round(totalW*10)/10 + ' pts pondérés';
+
+  const barEl = document.getElementById('exec-bar-global');
+  barEl.style.width = globalPct + '%';
+  barEl.className = 'exec-bar-fill' + (globalPct===100?' green':globalPct>=50?'':' orange');
+
+  // Légende corps
+  const legendRow = document.getElementById('exec-legend-row');
+  legendRow.innerHTML = '';
+  corpsList.forEach(c => {
+    const ct = allTasks.filter(t => t.corpsId === c.id);
+    if (!ct.length) return;
+    const cd = ct.filter(t => isTaskDone(t.corpsId,t.wk,t.day,t.text)).length;
+    const chip = document.createElement('div');
+    chip.className = 'exec-legend-chip';
+    chip.innerHTML = '<div class="exec-legend-dot" style="background:'+c.color+'"></div><span>'+c.label.split(' ')[0]+' '+cd+'/'+ct.length+'</span>';
+    legendRow.appendChild(chip);
+  });
+
+  // ── Grouper par semaine ──
+  container.innerHTML = '';
+
+  const weeks = getWeeksInRange(from, to);
+  weeks.forEach(wkDate => {
+    const wk = weekKey(wkDate);
+    const wkEnd = addDays(wkDate, 5);
+    const wkTasks = allTasks.filter(t => t.wk === wk);
+    if (!wkTasks.length) return;
+
+    let wkTotalW = 0, wkDoneW = 0, wkDoneCnt = 0;
+    wkTasks.forEach(t => {
+      wkTotalW += t.weight;
+      if (isTaskDone(t.corpsId,t.wk,t.day,t.text)) { wkDoneW += t.weight; wkDoneCnt++; }
+    });
+    const wkPct = wkTotalW > 0 ? Math.round((wkDoneW/wkTotalW)*100) : 0;
+
+    const wkGroup = document.createElement('div');
+    wkGroup.className = 'exec-week-group';
+
+    const wkTitle = document.createElement('div');
+    wkTitle.className = 'exec-week-title';
+    wkTitle.innerHTML =
+      '<span class="exec-week-title-left">Semaine du ' + formatDate(wkDate) + ' au ' + formatDate(wkEnd) + '</span>' +
+      '<div style="display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end">' +
+        '<div class="exec-week-bar-bg"><div class="exec-week-bar-fill" style="width:'+wkPct+'%;background:'+(wkPct===100?'#22c55e':wkPct>=60?'#f0b429':'#f97316')+'"></div></div>' +
+        '<span class="exec-week-pct" style="color:'+(wkPct===100?'#22c55e':wkPct>=60?'#f0b429':'#f97316')+'">'+wkPct+'%</span>' +
+        '<span style="font-size:11px;color:var(--ink-faint)">'+wkDoneCnt+'/'+wkTasks.length+'</span>' +
+      '</div>';
+    wkGroup.appendChild(wkTitle);
+
+    const wkBody = document.createElement('div');
+    wkBody.className = 'exec-week-body';
+
+    // Corps dans cette semaine
+    corpsList.forEach(c => {
+      const ct = wkTasks.filter(t => t.corpsId === c.id);
+      if (!ct.length) return;
+
+      const corpsCard = document.createElement('div');
+      corpsCard.className = 'exec-corps-card';
+      corpsCard.style.marginBottom = '8px';
+
+      let cTW=0, cDW=0;
+      ct.forEach(t => { cTW+=t.weight; if(isTaskDone(t.corpsId,t.wk,t.day,t.text)) cDW+=t.weight; });
+      const cPct = cTW>0 ? Math.round((cDW/cTW)*100) : 0;
+
+      const cHeader = document.createElement('div');
+      cHeader.className = 'exec-corps-header';
+      cHeader.onclick = function(){ execToggleCorps(this); };
+      cHeader.innerHTML =
+        '<div class="exec-corps-dot" style="background:'+c.color+'"></div>' +
+        '<div class="exec-corps-name">'+c.label+'</div>' +
+        '<div class="exec-corps-bar-bg"><div class="exec-corps-bar-fill" style="width:'+cPct+'%;background:'+c.color+'"></div></div>' +
+        '<div class="exec-corps-pct" style="color:'+c.color+'">'+cPct+'%</div>' +
+        '<div class="exec-corps-chevron">▼</div>';
+      corpsCard.appendChild(cHeader);
+
+      const cBody = document.createElement('div');
+      cBody.className = 'exec-tasks-body';
+
+      DAYS.forEach((day, di) => {
+        const dt = ct.filter(t => t.day === day);
+        if (!dt.length) return;
+        const dg = document.createElement('div');
+        dg.className = 'exec-day-group';
+        dg.innerHTML = '<div class="exec-day-label">'+DAY_LABELS[di]+'</div>';
+
+        dt.forEach(t => {
+          const done = isTaskDone(t.corpsId, t.wk, t.day, t.text);
+          const heavy = isHeavyTask(t.weight);
+          const row = document.createElement('div');
+          row.className = 'exec-task-row';
+          row.onclick = function(e) {
+            if (e.target.tagName !== 'INPUT') {
+              const cb = this.querySelector('input[type=checkbox]');
+              cb.checked = !cb.checked;
+              setTaskDone(t.corpsId, t.wk, t.day, t.text, cb.checked);
+              renderExecution();
+            }
+          };
+          const cbEl = document.createElement('input');
+          cbEl.type = 'checkbox'; cbEl.checked = done;
+          (function(ct2,wk2,cd2,txt){ cbEl.addEventListener('change', function(){ setTaskDone(ct2,wk2,cd2,txt,this.checked); renderExecution(); }); })(t.corpsId,t.wk,t.day,t.text);
+          const lblEl = document.createElement('div');
+          lblEl.className = 'exec-task-label' + (done?' done':'');
+          lblEl.textContent = t.text;
+          const bdgEl = document.createElement('div');
+          bdgEl.className = 'exec-task-weight-badge' + (heavy?' heavy':'');
+          bdgEl.textContent = (heavy?'🔶 ':'') + t.weight + 'pt';
+          row.appendChild(cbEl); row.appendChild(lblEl); row.appendChild(bdgEl);
+          dg.appendChild(row);
+        });
+        cBody.appendChild(dg);
+      });
+
+      corpsCard.appendChild(cBody);
+      wkBody.appendChild(corpsCard);
+    });
+
+    wkGroup.appendChild(wkBody);
+    container.appendChild(wkGroup);
+  });
+}
+
+function execToggleCorps(headerEl) {
+  const card = headerEl.closest('.exec-corps-card');
+  card.classList.toggle('collapsed');
+  const body = card.querySelector('.exec-tasks-body');
+  if (body) body.style.display = card.classList.contains('collapsed') ? 'none' : '';
+}
+
+// showSection est géré directement dans la fonction principale ci-dessus
+
+initMatRows();
+renderPlanning();
+</script>
+
+<!-- Zone d'impression rapport exécution (cachée à l'écran) -->
+<div id="exec-print-zone" style="display:none">
+  <div class="exec-print-title" id="epr-title">RAPPORT D'EXÉCUTION HEBDOMADAIRE</div>
+  <div class="exec-print-meta" id="epr-meta"></div>
+  <!-- Le tableau sera copié ici au moment de l'impression -->
+  <div id="epr-table-holder"></div>
+</div>
+
+<!-- ── PWA : enregistrement du service worker ── -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(reg => console.log('Service worker enregistré ✓', reg.scope))
+        .catch(err => console.warn('Échec enregistrement service worker :', err));
+    });
+  }
+</script>
+
+</body>
+</html>
